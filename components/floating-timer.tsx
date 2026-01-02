@@ -11,18 +11,18 @@ export default function FloatingTimer() {
   const [isActive, setIsActive] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
-  const timerRef = useRef(null)
-  const dragRef = useRef(null)
+  const timerRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef<HTMLDivElement | null>(null)
 
   // Timer logic
   useEffect(() => {
-    let interval = null
+    let interval: NodeJS.Timeout | null = null
 
     if (isActive) {
       interval = setInterval(() => {
         if (seconds === 0) {
           if (minutes === 0) {
-            clearInterval(interval)
+            if (interval) clearInterval(interval)
             setIsActive(false)
             // Play sound or notification here
           } else {
@@ -34,10 +34,12 @@ export default function FloatingTimer() {
         }
       }, 1000)
     } else if (!isActive && seconds !== 0) {
-      clearInterval(interval)
+      if (interval) clearInterval(interval)
     }
 
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) clearInterval(interval)
+    }
   }, [isActive, minutes, seconds])
 
   const toggleTimer = () => {
@@ -52,7 +54,7 @@ export default function FloatingTimer() {
 
   // Dragging logic
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (isDragging && dragRef.current) {
         setPosition({
           x: e.clientX - dragRef.current.offsetWidth / 2,
@@ -76,35 +78,37 @@ export default function FloatingTimer() {
     }
   }, [isDragging])
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true)
     dragRef.current = timerRef.current
   }
 
-  const formatTime = (min, sec) => {
+  const formatTime = (min: number, sec: number) => {
     return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
   }
 
   return (
     <div
       ref={timerRef}
-      className="bg-white/40 dark:bg-slate-800/40 backdrop-blur-lg rounded-3xl shadow-xl p-4 border border-white/20 dark:border-slate-700/20 w-full"
-      style={isDragging ? { position: "fixed", left: position.x, top: position.y, zIndex: 50 } : {}}
+      className="glass-card p-4 w-full max-w-sm"
+      style={isDragging ? { position: "fixed", left: position.x, top: position.y, zIndex: 50, width: '300px' } : {}}
     >
-      <div className="flex items-center justify-between mb-3 cursor-move" onMouseDown={handleMouseDown}>
+      <div className="flex items-center justify-between mb-4 cursor-move" onMouseDown={handleMouseDown}>
         <div className="flex items-center gap-2">
-          <Clock className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-          <h3 className="text-lg font-medium text-slate-800 dark:text-white">Timer</h3>
+          <Clock className="h-4 w-4 text-muted-foreground" />
+          <h3 className="text-lg font-medium text-foreground">Timer</h3>
         </div>
-        <GripHorizontal className="h-4 w-4 text-slate-400" />
+        <GripHorizontal className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
       </div>
 
       <div className="flex flex-col items-center">
-        <div className="text-4xl font-bold text-slate-800 dark:text-white mb-4">{formatTime(minutes, seconds)}</div>
+        <div className="text-5xl font-bold text-foreground mb-6 font-mono tracking-wider tabular-nums">
+          {formatTime(minutes, seconds)}
+        </div>
 
-        <div className="grid grid-cols-2 gap-2 mb-4 w-full">
+        <div className="grid grid-cols-2 gap-4 mb-6 w-full">
           <div>
-            <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Minutes</label>
+            <label className="text-xs text-muted-foreground mb-1 block">Minutes</label>
             <Input
               type="number"
               min="0"
@@ -112,11 +116,11 @@ export default function FloatingTimer() {
               value={minutes}
               onChange={(e) => setMinutes(Number.parseInt(e.target.value) || 0)}
               disabled={isActive}
-              className="h-8"
+              className="h-9 bg-white/5 border-white/10"
             />
           </div>
           <div>
-            <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Seconds</label>
+            <label className="text-xs text-muted-foreground mb-1 block">Seconds</label>
             <Input
               type="number"
               min="0"
@@ -124,21 +128,17 @@ export default function FloatingTimer() {
               value={seconds}
               onChange={(e) => setSeconds(Number.parseInt(e.target.value) || 0)}
               disabled={isActive}
-              className="h-8"
+              className="h-9 bg-white/5 border-white/10"
             />
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3 w-full">
           <Button
             onClick={toggleTimer}
-            variant="outline"
+            variant="default"
             size="sm"
-            className={
-              isActive
-                ? "bg-rose-100 text-rose-600 border-rose-200 hover:bg-rose-200 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800/30 dark:hover:bg-rose-900/50"
-                : "bg-teal-100 text-teal-600 border-teal-200 hover:bg-teal-200 dark:bg-teal-900/30 dark:text-teal-400 dark:border-teal-800/30 dark:hover:bg-teal-900/50"
-            }
+            className={`flex-1 ${isActive ? "bg-destructive hover:bg-destructive/90" : "bg-primary hover:bg-primary/90"}`}
           >
             {isActive ? <Pause className="h-4 w-4 mr-1" /> : <Play className="h-4 w-4 mr-1" />}
             {isActive ? "Pause" : "Start"}
@@ -147,7 +147,7 @@ export default function FloatingTimer() {
             onClick={resetTimer}
             variant="outline"
             size="sm"
-            className="bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700"
+            className="flex-1"
           >
             <RotateCcw className="h-4 w-4 mr-1" />
             Reset

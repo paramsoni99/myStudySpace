@@ -18,7 +18,7 @@ export default function AnalogClock() {
   const seconds = time.getSeconds().toString().padStart(2, "0")
 
   const DigitGroup = ({ value, shouldAnimate = false }: { value: string, shouldAnimate?: boolean }) => (
-    <div className="relative w-[60px] h-[80px] bg-slate-800/80 dark:bg-slate-200/10 rounded-lg backdrop-blur-md flex items-center justify-center overflow-hidden">
+    <div className="relative w-[60px] h-[80px] bg-white/10 dark:bg-white/5 rounded-lg backdrop-blur-md flex items-center justify-center overflow-hidden border border-white/10">
       {shouldAnimate ? (
         <AnimatePresence mode="popLayout">
           <motion.span
@@ -27,13 +27,13 @@ export default function AnalogClock() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -40, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="absolute text-4xl font-bold text-white dark:text-slate-200"
+            className="absolute text-4xl font-bold text-foreground"
           >
             {value}
           </motion.span>
         </AnimatePresence>
       ) : (
-        <span className="text-4xl font-bold text-white dark:text-slate-200">
+        <span className="text-4xl font-bold text-foreground">
           {value}
         </span>
       )}
@@ -44,7 +44,7 @@ export default function AnalogClock() {
     <motion.div
       animate={{ opacity: [1, 0.5, 1] }}
       transition={{ duration: 1, repeat: Infinity }}
-      className="mx-2 text-4xl font-bold text-slate-600 dark:text-slate-400"
+      className="mx-2 text-4xl font-bold text-muted-foreground"
     >
       :
     </motion.div>
@@ -56,19 +56,19 @@ export default function AnalogClock() {
       <motion.div
         animate={{
           background: [
-            "radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)",
-            "radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.2) 20%, transparent 70%)",
-            "radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)",
+            "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
+            "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.2) 20%, transparent 70%)",
+            "radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.1) 0%, transparent 50%)",
           ],
         }}
         transition={{ duration: 4, repeat: Infinity }}
         className="absolute inset-0 rounded-2xl"
       />
-      
+
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative flex items-center justify-center bg-white/5 dark:bg-slate-900/40 backdrop-blur-xl rounded-2xl p-8 shadow-xl"
+        className="relative flex items-center justify-center bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/10"
       >
         <div className="flex items-center gap-2">
           <div className="flex gap-1">

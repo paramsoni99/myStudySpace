@@ -27,7 +27,7 @@ export default function StudySpaceAI() {
       </div>
 
       {/* AI Display Container */}
-      <div className="w-full border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white/50 dark:bg-slate-900/50">
+      <div className="w-full border border-border rounded-xl overflow-hidden bg-white/5 dark:bg-black/20">
         {activeAI ? (
           <iframe
             src={activeAI === "youai" ? "https://you.com" : "https://www.blackbox.ai"}
@@ -37,7 +37,7 @@ export default function StudySpaceAI() {
           />
         ) : (
           <div className="w-full h-[800px] flex items-center justify-center">
-            <p className="text-lg text-slate-500">Select an AI assistant to begin</p>
+            <p className="text-lg text-muted-foreground">Select an AI assistant to begin</p>
           </div>
         )}
       </div>

@@ -49,7 +49,7 @@ export default function Tasks() {
   }
 
   const toggleTask = (id: string) => {
-    setTasks(tasks.map(task => 
+    setTasks(tasks.map(task =>
       task.id === id ? { ...task, completed: !task.completed } : task
     ))
   }
@@ -64,17 +64,17 @@ export default function Tasks() {
   const pendingTasks = totalTasks - completedTasks
 
   return (
-    <div className="w-full p-4 bg-white/40 dark:bg-slate-800/40 backdrop-blur-lg rounded-3xl shadow-xl border border-white/20 dark:border-slate-700/20">
-      <div className="flex items-center justify-between mb-4">
+    <div className="w-full flex flex-col h-full">
+      <div className="flex items-center justify-between mb-4 px-2">
         <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-medium text-slate-800 dark:text-white">Tasks</h3>
-          <div className="flex gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <h3 className="text-lg font-medium text-foreground">Tasks</h3>
+          <div className="flex gap-2 text-xs text-muted-foreground">
             <span>{pendingTasks} pending</span>
             <span>•</span>
             <span>{completedTasks} completed</span>
           </div>
         </div>
-        <Clock className="h-5 w-5 text-slate-400" />
+        <Clock className="h-5 w-5 text-muted-foreground" />
       </div>
 
       <form onSubmit={addTask} className="relative flex gap-2 mb-4">
@@ -83,19 +83,19 @@ export default function Tasks() {
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Add a new task..."
-          className="flex-1 bg-white/50 dark:bg-slate-900/50 pr-10"
+          className="flex-1 bg-white/5 dark:bg-black/20 border-white/10 pr-10 focus-visible:ring-primary"
         />
-        <Button 
-          type="submit" 
-          size="icon" 
+        <Button
+          type="submit"
+          size="icon"
           variant="ghost"
-          className="absolute right-0 top-0 h-full"
+          className="absolute right-0 top-0 h-full hover:bg-transparent text-muted-foreground hover:text-primary"
         >
           <PlusCircle className="h-5 w-5" />
         </Button>
       </form>
 
-      <div className="space-y-1">
+      <div className="space-y-1 overflow-y-auto flex-1 pr-2 custom-scrollbar">
         <AnimatePresence mode="popLayout" initial={false}>
           {tasks.map(task => (
             <motion.div
@@ -106,28 +106,28 @@ export default function Tasks() {
               transition={{ type: "spring", bounce: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-700/50">
-                <button 
+              <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/10 dark:hover:bg-white/5 transition-colors group">
+                <button
                   onClick={() => toggleTask(task.id)}
-                  className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded-full"
+                  className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary rounded-full"
                 >
                   {task.completed ? (
                     <CheckCircle2 className="h-5 w-5 text-green-500" />
                   ) : (
-                    <Circle className="h-5 w-5 text-slate-400" />
+                    <Circle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   )}
                 </button>
                 <span className={cn(
-                  "flex-1 text-sm text-slate-700 dark:text-slate-200 transition-colors duration-200",
-                  task.completed && "line-through text-slate-400 dark:text-slate-500"
+                  "flex-1 text-sm text-foreground transition-colors duration-200",
+                  task.completed && "line-through text-muted-foreground"
                 )}>
                   {task.text}
                 </span>
-                <button 
+                <button
                   onClick={() => deleteTask(task.id)}
-                  className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 rounded-full p-1"
+                  className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-destructive rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <X className="h-4 w-4 text-slate-400 hover:text-red-500" />
+                  <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                 </button>
               </div>
             </motion.div>
@@ -136,7 +136,7 @@ export default function Tasks() {
       </div>
 
       {tasks.length === 0 && (
-        <p className="text-center text-sm text-slate-500 dark:text-slate-400 py-4">
+        <p className="text-center text-sm text-muted-foreground py-4">
           No tasks yet. Add one above!
         </p>
       )}

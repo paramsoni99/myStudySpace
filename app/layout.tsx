@@ -1,6 +1,9 @@
 import type React from "react"
 import "@/app/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Outfit } from "next/font/google"
+
+const outfit = Outfit({ subsets: ["latin"] })
 
 export const metadata = {
   title: "StudySpace - Aesthetic Study Workspace",
@@ -15,8 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <body className={outfit.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
       </body>
