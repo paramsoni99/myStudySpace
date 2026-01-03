@@ -110,9 +110,9 @@ export default function Notes() {
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row gap-3 h-full overflow-hidden">
+      <div className="flex flex-col gap-3 h-full overflow-hidden">
         {/* Notes List */}
-        <div className="w-full md:w-1/3 bg-white/5 dark:bg-black/20 rounded-xl p-2 overflow-y-auto max-h-[150px] md:max-h-full custom-scrollbar border border-white/10">
+        <div className="w-full h-1/3 min-h-[120px] bg-white/5 dark:bg-black/20 rounded-xl p-2 overflow-y-auto custom-scrollbar border border-white/10 shrink-0">
           {notes.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">No notes yet. Create one!</p>
           ) : (
@@ -122,8 +122,8 @@ export default function Notes() {
                   key={note.id}
                   className={`p-2 rounded-lg text-sm cursor-pointer flex justify-between items-center group transition-colors
                     ${currentNote.id === note.id
-                      ? "bg-primary/20 text-foreground"
-                      : "hover:bg-white/10 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground"
+                      ? "bg-primary/20 text-white"
+                      : "hover:bg-white/10 dark:hover:bg-white/5 text-muted-foreground hover:text-white"
                     }`}
                   onClick={() => selectNote(note)}
                 >
@@ -149,10 +149,10 @@ export default function Notes() {
         </div>
 
         {/* Note Editor */}
-        <div className="flex-1 bg-white/5 dark:bg-black/20 rounded-xl p-2 overflow-hidden border border-white/10">
+        <div className="flex-1 bg-white/5 dark:bg-black/20 rounded-xl p-2 overflow-hidden border border-white/10 flex flex-col">
           <Textarea
             placeholder="Write your notes here..."
-            className="h-full resize-none bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-foreground placeolder:text-muted-foreground"
+            className="flex-1 resize-none bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/30 p-2 leading-relaxed"
             value={currentNote.content}
             onChange={handleNotesChange}
             disabled={!currentNote.id}

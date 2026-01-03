@@ -13,7 +13,12 @@ export default function AnalogClock() {
     return () => clearInterval(timer)
   }, [])
 
-  const hours = time.getHours().toString().padStart(2, "0")
+  let hourVal = time.getHours()
+  const ampm = hourVal >= 12 ? 'PM' : 'AM'
+  hourVal = hourVal % 12
+  hourVal = hourVal ? hourVal : 12 // the hour '0' should be '12'
+
+  const hours = hourVal.toString().padStart(2, "0")
   const minutes = time.getMinutes().toString().padStart(2, "0")
   const seconds = time.getSeconds().toString().padStart(2, "0")
 
@@ -84,6 +89,10 @@ export default function AnalogClock() {
           <div className="flex gap-1">
             <DigitGroup value={seconds[0]} shouldAnimate />
             <DigitGroup value={seconds[1]} shouldAnimate />
+          </div>
+
+          <div className="ml-4 flex flex-col justify-center">
+            <span className="text-2xl font-bold text-white/80">{ampm}</span>
           </div>
         </div>
       </motion.div>

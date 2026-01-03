@@ -1,128 +1,139 @@
-"use client";
+
+"use client"
 
 import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { Sun, Moon } from "lucide-react"
+import { Sun, Moon, Maximize2, Minimize2 } from "lucide-react"
 import AnalogClock from "@/components/analog-clock"
-import Calendar from "@/components/calendar"
-import VideoEmbed from "@/components/video-embed"
+// import Calendar from "@/components/calendar" // Optional, maybe put in a tab or below tasks
 import Tasks from "@/components/tasks"
 import FloatingTimer from "@/components/floating-timer"
-import Notes from "@/components/notes"
-import { BackgroundPaths } from "@/components/BackgroundPaths"
-import StudySpaceAI from "@/components/study-space-ai"
-import { GlowingBackground } from "@/components/ui/glow-background"
+import { VideoBackground } from "@/components/video-background"
+import { CollapsibleSidebar } from "@/components/ui/collapsible-sidebar"
+import { Input } from "@/components/ui/input"
+
+import VideoControl from "@/components/video-control"
+import QuickLinks from "@/components/quick-links"
+import DailyFocus from "@/components/daily-focus"
+import TechQuote from "@/components/tech-quote"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+  const [videoId, setVideoId] = useState("jfKfPfyJRdk") // Lofi Girl
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  // if (!mounted) return null // Removing to ensure render content appears even if specific hydration is pending
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+      setIsFullscreen(true)
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+        setIsFullscreen(false)
+      }
+    }
+  }
 
   return (
-    <>
-      <BackgroundPaths title="StudySpace" />
-      <main className="min-h-screen p-4 md:p-8 pt-12 relative z-10 selection:bg-purple-500/30">
-        <div className="max-w-7xl mx-auto space-y-8">
-          <header className="flex justify-between items-center mb-12" id="clock-section">
-            <div className="space-y-1">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                My Dashboard
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400 font-medium">
-                Focus, Organize, Achieve.
-              </p>
-            </div>
+    <main className="relative min-h-screen w-full overflow-hidden text-slate-100">
+      <VideoBackground key={videoId} videoId={videoId} isPlaying={isPlaying} />
+
+      {/* Top Navigation / Controls */}
+      <header className="fixed top-0 left-0 right-0 z-40 p-4 transition-all duration-300 hover:bg-black/40 group">
+        <div className="flex justify-between items-center max-w-[1920px] mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="flex items-center gap-4">
+            {/* Header Controls removed/minimized */}
+          </div>
+
+          <div className="flex items-center gap-2">
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full w-12 h-12 border-2 bg-white/50 dark:bg-black/50 backdrop-blur-md"
+              className="rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md"
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-          </header>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleFullscreen}
+              className="rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md"
+            >
+              {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+            </Button>
+          </div>
+        </div>
+      </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column (Main Content) */}
-            <div className="lg:col-span-8 flex flex-col gap-8">
-              {/* Clock Section */}
-              <section className="flex justify-center py-8">
-                <AnalogClock />
-              </section>
+      {/* Main Layout Area */}
+      <div className="relative z-10 flex h-screen pt-16 pb-4 px-4 gap-4">
 
-              {/* Stats Grid - Placeholder layout for potentially new stats if any, or just spacing */}
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Calendar Section */}
-                <section className="glass-card p-6 relative group">
-                  <GlowingBackground />
-                  <div className="relative z-10 flex flex-col h-full items-center">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-6 self-start flex items-center gap-2">
-                      Calendar
-                    </h2>
-                    <Calendar />
-                  </div>
-                </section>
-
-                {/* Video Embed Section */}
-                <section className="glass-card p-6 relative group">
-                  <GlowingBackground />
-                  <div className="relative z-10 h-full">
-                    <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-6">Ambience</h2>
-                    <VideoEmbed />
-                  </div>
-                </section>
-              </div>
-
-              {/* StudySpaceAI Section */}
-              <section className="glass-card p-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-50">
-                  <div className="w-24 h-24 bg-purple-500/20 rounded-full blur-2xl" />
-                </div>
-                <div className="relative z-10">
-                  <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">AI Assistant</h2>
-                  <StudySpaceAI />
-                </div>
-              </section>
-            </div>
-
-            {/* Right Column (Sidebar) */}
-            <div className="lg:col-span-4 flex flex-col gap-8">
-              {/* Tasks Section */}
-              <section className="glass-card p-6 relative min-h-[400px]">
-                <div className="relative z-10">
-                  <Tasks />
-                </div>
-              </section>
-
-              {/* Floating Timer */}
-              <section className="relative flex justify-center py-4">
-                <FloatingTimer />
-              </section>
-
-              {/* Notes Section */}
-              <section className="glass-card p-6 relative h-[500px]">
-                <div className="relative z-10 h-full flex flex-col">
-                  <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-4">Quick Notes</h2>
-                  <div className="flex-1 overflow-hidden">
-                    <Notes />
-                  </div>
-                </div>
-              </section>
+        {/* Left Sidebar - Tasks */}
+        <CollapsibleSidebar side="left" width="350px" defaultCollapsed={false}>
+          <div className="flex flex-col h-full gap-6">
+            <div className="glass-card p-4 flex-1 overflow-hidden backdrop-blur-3xl bg-black/20 border-white/5 shadow-inner">
+              <Tasks />
             </div>
           </div>
+        </CollapsibleSidebar>
 
-          <footer className="mt-20 text-center text-sm text-slate-500 dark:text-slate-400 pb-8">
-            <p>© {new Date().getFullYear()} StudySpace. Designed for focus.</p>
-          </footer>
+        {/* Center Area - Focus */}
+        <div className="flex-1 flex flex-col items-center justify-center relative min-w-0">
+          <div className="scale-125 mb-12">
+            <AnalogClock />
+          </div>
+
+          <div className="mt-8">
+            <FloatingTimer />
+          </div>
+
+          {/* Dynamic Quote or Greeting could go here */}
+          <div className="absolute bottom-8 text-center opacity-80 mix-blend-overlay">
+            <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-lg">
+              Build. Ship. Innovate.
+            </h1>
+          </div>
         </div>
-      </main>
-    </>
+
+        {/* Right Sidebar - Tools */}
+        <CollapsibleSidebar side="right" width="320px" defaultCollapsed={false} className="items-end">
+          <div className="flex flex-col h-full w-full gap-4 overflow-y-auto custom-scrollbar p-1">
+
+            {/* 1. Daily Focus */}
+            <div className="glass-card p-4 backdrop-blur-3xl bg-black/20 border-white/5 shadow-inner">
+              <DailyFocus />
+            </div>
+
+            {/* 2. Video Control */}
+            <div className="glass-card p-4 backdrop-blur-3xl bg-black/20 border-white/5 shadow-inner">
+              <VideoControl onVideoSet={setVideoId} isPlaying={isPlaying} onTogglePlay={() => setIsPlaying(!isPlaying)} />
+            </div>
+
+            {/* 3. Quick Links */}
+            <div className="glass-card p-4 backdrop-blur-3xl bg-black/20 border-white/5 shadow-inner">
+              <QuickLinks />
+            </div>
+
+            {/* 4. Tech Quote */}
+            <div className="glass-card p-0 backdrop-blur-3xl bg-black/20 border-white/5 shadow-inner mt-auto">
+              <TechQuote />
+            </div>
+
+          </div>
+        </CollapsibleSidebar>
+
+      </div>
+    </main>
   )
 }
+
