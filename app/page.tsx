@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -17,6 +16,7 @@ import VideoControl from "@/components/video-control"
 import QuickLinks from "@/components/quick-links"
 import DailyFocus from "@/components/daily-focus"
 import TechQuote from "@/components/tech-quote"
+import FocusAppButton from "@/components/FocusAppButton"
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -95,6 +95,11 @@ export default function Home() {
 
           <div className="mt-8">
             <FloatingTimer />
+          </div>
+
+          {/* Add FocusAppButton to the center area */}
+          <div className="mt-8">
+            <FocusAppButton />
           </div>
 
           {/* Dynamic Quote or Greeting could go here */}
